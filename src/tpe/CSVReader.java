@@ -29,6 +29,7 @@ public class CSVReader {
 			Integer etiqueta = Integer.parseInt(line[2].trim());
 			
 			// Aca instanciar lo que necesiten en base a los datos leidos
+			System.out.println("origen "+origen+" destino "+destino+" etiqueta "+etiqueta);
 		}
 		
 	}
