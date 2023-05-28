@@ -1,4 +1,4 @@
-package grafo;
+package Grafo;
 
 import java.util.Objects;
 

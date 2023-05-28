@@ -1,5 +1,9 @@
+package tpe;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import Interfaces.Grafo;
 
 
 public class ServicioBFS {
