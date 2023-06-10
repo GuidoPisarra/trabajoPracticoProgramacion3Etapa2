@@ -7,23 +7,26 @@ import java.util.List;
 
 import Grafo.Arco;
 import Grafo.GrafoNoDirigido;
+import Timer.Timer;
 
 public class Backtracking {
 
 	GrafoNoDirigido<Integer> grafo;
 	HashMap<Integer,String> visitados = new HashMap<Integer,String>();
-	
+	Double timer;
 	
 	public Backtracking(GrafoNoDirigido<Integer> grafo) {
 		this.grafo = grafo;
 	}
 
 	public List<Integer> Backtracking_distancia( int origen, int destino) {
+		Timer timer = new Timer();
 		Iterator<Integer> vertices = this.grafo.obtenerVertices();
 		while(vertices.hasNext()) {
 			int vertice = vertices.next();
 			this.visitados.put(vertice,"BLANCO");
 		}		
+		this.timer = timer.stop();
 		return backtracking(origen,destino);
 	}
 	

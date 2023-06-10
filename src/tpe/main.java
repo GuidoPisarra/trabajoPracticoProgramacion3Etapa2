@@ -21,7 +21,7 @@ public class main {
 		
 		
 		Greedy greedy = new Greedy();
-		HashMap<Integer,Integer> distancia_greedy = greedy.greedy(reader.obtenerInformacion(), 1, 4);
+		HashMap<Integer,Integer> distancia_greedy = greedy.greedy(reader.obtenerInformacion(), 1, 6);
 		System.out.println("Greedy");
 		System.out.println(distancia_greedy.toString());
 	}

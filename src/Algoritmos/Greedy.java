@@ -3,18 +3,23 @@ package Algoritmos;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+
 import Grafo.Arco;
 import Grafo.GrafoNoDirigido;
+import Timer.Timer;
 
 public class Greedy {
 	private int distanciaMaxima =  9999999;
+	private double timer;
 	
-	public HashMap<Integer, Integer> greedy(GrafoNoDirigido grafo, int origen, int destino){
+	public HashMap<Integer, Integer> greedy(GrafoNoDirigido<Integer> grafo, int origen, int destino){
+		Timer timer = new Timer();
+		timer.start();
 		LinkedList<Integer> resultado = new LinkedList<Integer>();
-		Iterator<Integer> vertices = grafo.obtenerVertices();
 		HashMap<Integer, Integer> distancia = new HashMap<Integer, Integer>();
 		HashMap<Integer, Integer> padre = new HashMap<Integer, Integer>(); 
-
+		Iterator<Integer> vertices = grafo.obtenerVertices();
+		
 		while(vertices.hasNext()) {
 			int vertice = vertices.next();
 			distancia.put(vertice, distanciaMaxima );
@@ -25,11 +30,14 @@ public class Greedy {
 		vertices = grafo.obtenerVertices();
 		while(vertices.hasNext()) {
 			int vertice = vertices.next();
+			System.out.println("vertice "+ vertice);
+
 			int u = obtenerAdyacenteMenorDistancia(grafo, vertice);
 			resultado.add(vertice);
 			Iterator<Integer> adyacentes = grafo.obtenerAdyacentes(vertice);
 			while(adyacentes.hasNext()) {
 				int adyacente = adyacentes.next();
+				System.out.println("adyacente "+ adyacente);
 				
 
 				if(distancia.get(u) + distanciaEntre(grafo,u,vertice)<distancia.get(vertice)) {
@@ -40,10 +48,10 @@ public class Greedy {
 				}
 			}
 		}
+		this.timer = timer.stop();
 		if(!resultado.isEmpty()) {
 			return padre;
 		}
-		
 		return null;
 		
 	}
