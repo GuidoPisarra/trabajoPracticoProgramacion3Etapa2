@@ -15,15 +15,14 @@ public class main {
 		reader.read();
 		
 		Backtracking back = new Backtracking(reader.obtenerInformacion());
-		List<Integer>distancia= back.Backtracking_distancia(5, 3);
 		System.out.println("Backtracking");
-		System.out.println(distancia.toString());
+		back.Backtracking_distancia(1, 3);
 		
 		
-		Greedy greedy = new Greedy();
-		HashMap<Integer,Integer> distancia_greedy = greedy.greedy(reader.obtenerInformacion(), 1, 6);
-		System.out.println("Greedy");
-		System.out.println(distancia_greedy.toString());
+//		Greedy greedy = new Greedy();
+//		System.out.println("Greedy");
+//		greedy.greedy(reader.obtenerInformacion(), 1, 6);
+		
 	}
 
 }

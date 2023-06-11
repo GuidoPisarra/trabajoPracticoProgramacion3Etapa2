@@ -3,6 +3,7 @@ package Algoritmos;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import Grafo.Arco;
 import Grafo.GrafoNoDirigido;
@@ -12,7 +13,7 @@ public class Greedy {
 	private int distanciaMaxima =  9999999;
 	private double timer;
 	
-	public HashMap<Integer, Integer> greedy(GrafoNoDirigido<Integer> grafo, int origen, int destino){
+	public void greedy(GrafoNoDirigido<Integer> grafo, int origen, int destino){
 		Timer timer = new Timer();
 		timer.start();
 		LinkedList<Integer> resultado = new LinkedList<Integer>();
@@ -30,40 +31,60 @@ public class Greedy {
 		vertices = grafo.obtenerVertices();
 		while(vertices.hasNext()) {
 			int vertice = vertices.next();
-			System.out.println("vertice "+ vertice);
 
-			int u = obtenerAdyacenteMenorDistancia(grafo, vertice);
 			resultado.add(vertice);
 			Iterator<Integer> adyacentes = grafo.obtenerAdyacentes(vertice);
 			while(adyacentes.hasNext()) {
 				int adyacente = adyacentes.next();
-				System.out.println("adyacente "+ adyacente);
-				
+				int u = obtenerAdyacenteMenorDistancia(grafo, vertice, resultado);
 
-				if(distancia.get(u) + distanciaEntre(grafo,u,vertice)<distancia.get(vertice)) {
-					System.out.println("Distancia adya "+distancia.get(adyacente) + " " + adyacente);
-					System.out.println("Distancia vertice y u "+distanciaEntre(grafo,u,vertice));
-					distancia.replace(adyacente,distancia.get(u) + distanciaEntre(grafo,u,vertice) );
-					padre.replace(vertice, u);					
+				if(distancia.get(vertice) + distanciaEntre(grafo,u,adyacente)<distancia.get(adyacente)) {
+					distancia.replace(adyacente,distancia.get(vertice) + distanciaEntre(grafo,u,adyacente));
+					padre.replace(vertice, u);
+					System.out.println(padre.toString());
 				}
+					
+
+
+//				if(distancia.get(u) + distanciaEntre(grafo,u,vertice)<distancia.get(vertice)) {
+//					System.out.println("Distancia adya "+distancia.get(adyacente) + " " + adyacente);
+//					System.out.println("Distancia vertice y u "+distanciaEntre(grafo,u,vertice));
+//					distancia.replace(adyacente,distancia.get(u) + distanciaEntre(grafo,u,vertice) );
+//					padre.replace(vertice, u);					
+//				}
 			}
+
 		}
 		this.timer = timer.stop();
 		if(!resultado.isEmpty()) {
-			return padre;
+			this.mostrarSolucion(padre, distancia);
+		}else {
+			this.mostrarSolucion(null,distancia);
 		}
-		return null;
 		
 	}
 	
-	private int obtenerAdyacenteMenorDistancia(GrafoNoDirigido<Integer> grafo, int origen) {
+	
+//	for(int i = 0 ; i<resultado.size(); i++) {
+//	int adyacente = resultado.get(i);
+//	System.out.println("adyacente "+ adyacente);
+//	if(distancia.get(u) + distanciaEntre(grafo,u,vertice)<distancia.get(vertice)) {
+//		System.out.println("Distancia adya "+distancia.get(adyacente) + " " + adyacente);
+//		System.out.println("Distancia vertice y u "+distanciaEntre(grafo,u,vertice));
+//		distancia.replace(adyacente,distancia.get(u) + distanciaEntre(grafo,u,vertice) );
+//		padre.replace(vertice, u);					
+//	}
+//	
+//}
+	
+	private int obtenerAdyacenteMenorDistancia(GrafoNoDirigido<Integer> grafo, int origen, List<Integer> resultadoParcial) {
 		Iterator<Integer> adyacentes = grafo.obtenerAdyacentes(origen);
 		int verticeMenor=0;
 		float distancia = 9999999;
 		while(adyacentes.hasNext()) {
 			int adyacente = adyacentes.next();
 			Arco<Integer> arco = grafo.obtenerArco(origen, adyacente);
-			if(arco!=null && arco.getEtiqueta()<distancia) {
+			if(arco!=null && arco.getEtiqueta()<distancia && !resultadoParcial.contains(adyacente)) {
 				distancia = arco.getEtiqueta();
 				verticeMenor = adyacente;
 			}
@@ -73,7 +94,29 @@ public class Greedy {
 	
 	private Integer distanciaEntre(GrafoNoDirigido<Integer> grafo,int origen, int destino) {
 		Arco<Integer> arco = grafo.obtenerArco(origen, destino);
-		return arco.getEtiqueta();
+		if(arco!=null) {
+			return arco.getEtiqueta();
+		}
+		return distanciaMaxima;
+	}
+	
+	private void mostrarSolucion(HashMap<Integer,Integer> padre, HashMap<Integer,Integer>distancia) {
+		int distanciaTotal = 0;
+		if(padre!=null) {
+			for(Integer key:padre.keySet()) {
+				Integer value = padre.get(key);
+				System.out.print(value + " ");
+			}
+			for(Integer key: distancia.keySet() ) {
+				Integer value = distancia.get(key);
+				distanciaTotal = distanciaTotal + value;
+			}
+		}else {
+			System.out.println("No se pudo determinar una solución");
+		}
+		System.out.println();
+		System.out.println(distanciaTotal + " Kms");
+		System.out.println("Tiempo: "+this.timer);
 	}
 
 }
