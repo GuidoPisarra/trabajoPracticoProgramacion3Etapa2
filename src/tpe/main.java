@@ -18,7 +18,7 @@ public class main {
 		
 		Greedy greedy = new Greedy();
 		System.out.println("Greedy");
-		greedy.greedy(reader.obtenerInformacion(), 1, 6);
+		greedy.greedy(reader.obtenerInformacion(), 1, 3);
 		
 	}
 

@@ -23,27 +23,31 @@ public class Greedy {
 		
 		while(vertices.hasNext()) {
 			int vertice = vertices.next();
-			distancia.put(vertice, distanciaMaxima );
+			distancia.put(vertice, distanciaMaxima);
 			padre.put(vertice, null);
 		}
+		
 		distancia.replace(origen, 0);
 
 		vertices = grafo.obtenerVertices();
 		while(vertices.hasNext()) {
 			int vertice = vertices.next();
-
+			int u = obtenerAdyacenteMenorDistancia(grafo, vertice, resultado);
 			resultado.add(vertice);
-			Iterator<Integer> adyacentes = grafo.obtenerAdyacentes(vertice);
+
+			Iterator<Integer> adyacentes = grafo.obtenerAdyacentes(u);
 			while(adyacentes.hasNext()) {
 				int adyacente = adyacentes.next();
-				int u = obtenerAdyacenteMenorDistancia(grafo, vertice, resultado);
 
 				if(distancia.get(vertice) + distanciaEntre(grafo,u,adyacente)<distancia.get(adyacente)) {
 					distancia.replace(adyacente,distancia.get(vertice) + distanciaEntre(grafo,u,adyacente));
 					padre.replace(vertice, u);
 					System.out.println(padre.toString());
 				}
-			}
+
+
+			}	
+
 		}
 		this.timer = timer.stop();
 		if(!resultado.isEmpty()) {
@@ -84,7 +88,7 @@ public class Greedy {
 	
 	private Integer distanciaEntre(GrafoNoDirigido<Integer> grafo,int origen, int destino) {
 		Arco<Integer> arco = grafo.obtenerArco(origen, destino);
-		if(arco!=null) {
+		if(grafo.existeArco(origen, destino)) {
 			return arco.getEtiqueta();
 		}
 		return distanciaMaxima;
