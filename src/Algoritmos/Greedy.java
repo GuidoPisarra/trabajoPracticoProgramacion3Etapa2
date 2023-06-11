@@ -43,17 +43,7 @@ public class Greedy {
 					padre.replace(vertice, u);
 					System.out.println(padre.toString());
 				}
-					
-
-
-//				if(distancia.get(u) + distanciaEntre(grafo,u,vertice)<distancia.get(vertice)) {
-//					System.out.println("Distancia adya "+distancia.get(adyacente) + " " + adyacente);
-//					System.out.println("Distancia vertice y u "+distanciaEntre(grafo,u,vertice));
-//					distancia.replace(adyacente,distancia.get(u) + distanciaEntre(grafo,u,vertice) );
-//					padre.replace(vertice, u);					
-//				}
 			}
-
 		}
 		this.timer = timer.stop();
 		if(!resultado.isEmpty()) {

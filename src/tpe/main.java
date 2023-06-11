@@ -1,8 +1,5 @@
 package tpe;
 
-import java.util.HashMap;
-import java.util.List;
-
 import Algoritmos.Backtracking;
 import Algoritmos.Greedy;
 
@@ -14,14 +11,14 @@ public class main {
 		CSVReader reader = new CSVReader(path);
 		reader.read();
 		
-		Backtracking back = new Backtracking(reader.obtenerInformacion());
 		System.out.println("Backtracking");
-		back.Backtracking_distancia(1, 3);
+		Backtracking back = new Backtracking(reader.obtenerInformacion(), 1, 3);
+		back.Backtracking_distancia();
+		System.out.println();
 		
-		
-//		Greedy greedy = new Greedy();
-//		System.out.println("Greedy");
-//		greedy.greedy(reader.obtenerInformacion(), 1, 6);
+		Greedy greedy = new Greedy();
+		System.out.println("Greedy");
+		greedy.greedy(reader.obtenerInformacion(), 1, 6);
 		
 	}
 

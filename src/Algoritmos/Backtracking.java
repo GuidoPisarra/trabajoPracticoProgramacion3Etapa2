@@ -14,72 +14,69 @@ public class Backtracking {
 	GrafoNoDirigido<Integer> grafo;
 	HashMap<Integer,String> visitados = new HashMap<Integer,String>();
 	Timer timer = new Timer();
+	int origen;
+	int destino;
 	
-	public Backtracking(GrafoNoDirigido<Integer> grafo) {
+	public Backtracking(GrafoNoDirigido<Integer> grafo, int origen, int destino) {
 		this.grafo = grafo;
+		this.origen = origen;
+		this.destino = destino;
 	}
 
-	public void Backtracking_distancia( int origen, int destino) {
+	public void Backtracking_distancia() {
 		this.timer.start();
-		if(this.grafo.contieneVertice(origen) && this.grafo.contieneVertice(destino)) {
+		if(this.grafo.contieneVertice(this.origen) && this.grafo.contieneVertice(this.destino)) {
+			LinkedList<Integer> camino = new LinkedList<Integer>();
 			Iterator<Integer> vertices = this.grafo.obtenerVertices();
 			while(vertices.hasNext()) {
 				int vertice = vertices.next();
 				this.visitados.put(vertice,"BLANCO");
 			}		
-			//System.out.println(this.timer);
-			
-			
-			mostrarResultado(backtracking(origen,destino), this.timer.stop());
-			
+			camino.add(this.origen);
+			mostrarResultado(backtracking(camino,origen), this.timer.stop());
+		}else {
+			mostrarResultado(new LinkedList<Integer>(), this.timer.stop());
 		}
-		mostrarResultado(new LinkedList<Integer>(), this.timer.stop());
 	}
 	
-	private List<Integer> backtracking(int origen, int destino){
+	private List<Integer> backtracking(List<Integer> caminoActual , int actual){
 		LinkedList<Integer> caminoMenor = new LinkedList<Integer>();
-		//System.out.println(origen);
-		if(origen==destino) {
-			caminoMenor.add(origen);	
+		if(actual==this.destino) {
+			caminoMenor.addAll(caminoActual);	
 		}else {
-			this.visitados.replace(origen,"AMARILLO");
 			Iterator<Integer> adyacentes = this.grafo.obtenerAdyacentes(origen);
+			this.visitados.replace(actual,"AMARILLO");
 			while(adyacentes.hasNext()) {
 				int adyacente = adyacentes.next();
 				if(this.visitados.get(adyacente).equals("BLANCO")) {
-					LinkedList<Integer> camino = new LinkedList<Integer>();
-//					if(this.distancia(camino, origen)<this.distancia(caminoMenor, origen)) {
-						camino.addAll(backtracking(adyacente,destino));
-//					}
+					caminoActual.add(adyacente);
+					if(this.distancia(caminoActual)<this.distancia(caminoMenor)) {
+						backtracking(caminoActual, adyacente);
+					}
 
-					if((this.distancia(camino, origen)<this.distancia(caminoMenor, origen)) || (caminoMenor.isEmpty())) {
-						caminoMenor.clear();						
-						camino.add(origen);
-						caminoMenor.addAll(camino);
-						System.out.println(camino.toString());
-						System.out.println(caminoMenor.toString());
-
-						System.out.println(this.distancia(camino, origen));
-						System.out.println(this.distancia(caminoMenor, origen));
-
-						//System.out.println(caminoMenor.toString());
-
+					if((this.distancia(caminoActual)<=this.distancia(caminoMenor)) || (caminoMenor.isEmpty())) {
+						if(llegoDestino(caminoActual)) {
+							caminoMenor.clear();						
+							caminoMenor.addAll(caminoActual);
+						}
 					}
 				}
 			}
 			this.visitados.replace(origen, "BLANCO");
-		}	
-		
+		}			
 		return caminoMenor; 
 	}
 	
-	private float distancia(List<Integer> camino,int origen) {
-		Iterator<Arco<Integer>> arcos = this.grafo.obtenerArcos(origen);
+	private float distancia(List<Integer> camino) {	
+		List<Integer> listaAuxiliar = camino;
 		float distancia = 0;
-		while(arcos.hasNext()) {
-			Arco<Integer> arco = arcos.next();
-			System.out.println(arco.getEtiqueta());
-			distancia = distancia + arco.getEtiqueta();
+		for(int i = 0; i<camino.size()-1; i++) {
+			int estacion = listaAuxiliar.get(i);
+			int estacion2 = listaAuxiliar.get(i+1);
+			Arco<Integer> arco = this.grafo.obtenerArco(estacion, estacion2);
+			if(arco!=null) {
+				distancia = distancia + arco.getEtiqueta();
+			}			
 		}
 		return distancia;
 	}
@@ -90,7 +87,7 @@ public class Backtracking {
 				System.out.print("E"+res+" - ");
 			}
 			System.out.println();
-			System.out.println(this.distancia(result, result.get(0))+" Kms");
+			System.out.println(this.distancia(result)+" Kms");
 			System.out.println("Tiempo: "+tiempo);
 		}else {
 			System.out.println();
@@ -99,6 +96,8 @@ public class Backtracking {
 		}
 	}
 	
-	
+	private boolean llegoDestino(List<Integer> camino) {
+		return camino.get(0)==this.origen && camino.get(camino.size()-1)==this.destino;
+	}
 	
 }
