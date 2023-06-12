@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import Grafo.Arco;
+import Grafo.GrafoDirigido;
 import Grafo.GrafoNoDirigido;
 import Timer.Timer;
 
@@ -14,7 +15,7 @@ public class Greedy {
 	private int distanciaMaxima =  Integer.MAX_VALUE;
 	private double timer;
 	
-	public void greedy(GrafoNoDirigido<Integer> grafo, int origen, int destino){
+	public void greedy(GrafoDirigido<Integer> grafo, int origen, int destino){
 		Timer timer = new Timer();
 		timer.start();
 		LinkedList<Integer> resultado = new LinkedList<Integer>();
@@ -71,7 +72,7 @@ public class Greedy {
 		return verticeMenor;
 	}
 	
-	private Integer distanciaEntre(GrafoNoDirigido<Integer> grafo,int origen, int destino) {
+	private Integer distanciaEntre(GrafoDirigido<Integer> grafo,int origen, int destino) {
 		Iterator<Integer> adyacentes =  grafo.obtenerAdyacentes(origen);
 		while(adyacentes.hasNext()) {
 			int adyacente = adyacentes.next();
@@ -85,13 +86,13 @@ public class Greedy {
 	}
 	
 	private void mostrarSolucion(HashMap<Integer,Integer> padre, HashMap<Integer,Integer>distancia, int destino) {
-		int distanciaTotal = 0;
 		LinkedList<Integer> camino = new LinkedList<Integer>();
 		int vertice  = destino;
+		int distanciaTotal = distancia.get(vertice);
 		
 		if(padre!=null) {
 			while(vertice != -1) {
-				distanciaTotal = distanciaTotal + distancia.get(vertice);
+				System.out.println("vertice " +vertice+ " " +distanciaTotal);
 				camino.addFirst(vertice);
 				vertice = padre.get(vertice);
 			}
