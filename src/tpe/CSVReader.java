@@ -17,7 +17,7 @@ public class CSVReader {
 
 	private String path;
 	
-	GrafoDirigido<Integer> grafo = new GrafoDirigido<Integer>();
+	GrafoNoDirigido<Integer> grafo = new GrafoNoDirigido<Integer>();
 	
 	
 	
@@ -79,7 +79,7 @@ public class CSVReader {
 		return lines;
 	}
 	
-	public GrafoDirigido<Integer> obtenerInformacion() {
+	public GrafoNoDirigido<Integer> obtenerInformacion() {
 		return this.grafo;
 	}
 

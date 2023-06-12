@@ -15,7 +15,7 @@ public class Greedy {
 	private int distanciaMaxima =  Integer.MAX_VALUE;
 	private double timer;
 	
-	public void greedy(GrafoDirigido<Integer> grafo, int origen, int destino){
+	public void greedy(GrafoNoDirigido<Integer> grafo, int origen, int destino){
 		Timer timer = new Timer();
 		timer.start();
 		LinkedList<Integer> resultado = new LinkedList<Integer>();
@@ -72,7 +72,7 @@ public class Greedy {
 		return verticeMenor;
 	}
 	
-	private Integer distanciaEntre(GrafoDirigido<Integer> grafo,int origen, int destino) {
+	private Integer distanciaEntre(GrafoNoDirigido<Integer> grafo,int origen, int destino) {
 		Iterator<Integer> adyacentes =  grafo.obtenerAdyacentes(origen);
 		while(adyacentes.hasNext()) {
 			int adyacente = adyacentes.next();
@@ -92,7 +92,6 @@ public class Greedy {
 		
 		if(padre!=null) {
 			while(vertice != -1) {
-				System.out.println("vertice " +vertice+ " " +distanciaTotal);
 				camino.addFirst(vertice);
 				vertice = padre.get(vertice);
 			}
@@ -100,7 +99,14 @@ public class Greedy {
 			System.out.println("No se pudo determinar una solución");
 		}
 		System.out.println();
-		System.out.println(camino.toString());
+		for (int i = 0; i < camino.size(); i++) {
+		    Integer res = camino.get(i);
+		    System.out.print("E" + res);
+		    if (i != camino.size()-1) {
+		        System.out.print(" - ");
+		    }
+		}
+		System.out.println();
 		System.out.println(distanciaTotal + " Kms");
 		System.out.println("Tiempo: "+this.timer);
 	}

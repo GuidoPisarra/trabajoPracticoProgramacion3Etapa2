@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import Grafo.Arco;
+import Grafo.GrafoDirigido;
 import Grafo.GrafoNoDirigido;
 import Timer.Timer;
 
@@ -44,14 +45,14 @@ public class Backtracking {
 		if(actual==this.destino) {
 			caminoMenor.addAll(caminoActual);	
 		}else {
-			Iterator<Integer> adyacentes = this.grafo.obtenerAdyacentes(origen);
+			Iterator<Integer> adyacentes = this.grafo.obtenerAdyacentes(actual);
 			this.visitados.replace(actual,"AMARILLO");
 			while(adyacentes.hasNext()) {
 				int adyacente = adyacentes.next();
 				if(this.visitados.get(adyacente).equals("BLANCO")) {
 					caminoActual.add(adyacente);
 					if(this.distancia(caminoActual)<this.distancia(caminoMenor)) {
-						backtracking(caminoActual, adyacente);
+						caminoActual.addAll(backtracking(caminoActual, adyacente));
 					}
 
 					if((this.distancia(caminoActual)<=this.distancia(caminoMenor)) || (caminoMenor.isEmpty())) {
@@ -62,7 +63,7 @@ public class Backtracking {
 					}
 				}
 			}
-			this.visitados.replace(origen, "BLANCO");
+			this.visitados.replace(actual, "BLANCO");
 		}			
 		return caminoMenor; 
 	}
@@ -73,8 +74,8 @@ public class Backtracking {
 		for(int i = 0; i<camino.size()-1; i++) {
 			int estacion = listaAuxiliar.get(i);
 			int estacion2 = listaAuxiliar.get(i+1);
-			Arco<Integer> arco = this.grafo.obtenerArco(estacion, estacion2);
-			if(arco!=null) {
+			if(this.grafo.existeArco(estacion, estacion2)) {
+				Arco<Integer> arco = this.grafo.obtenerArco(estacion, estacion2);
 				distancia = distancia + arco.getEtiqueta();
 			}			
 		}
@@ -83,8 +84,12 @@ public class Backtracking {
 	
 	private void mostrarResultado(List<Integer> result, double tiempo) {
 		if(!result.isEmpty()) {
-			for(Integer res :result) {
-				System.out.print("E"+res+" - ");
+			for (int i = 0; i < result.size(); i++) {
+			    Integer res = result.get(i);
+			    System.out.print("E" + res);
+			    if (i != result.size()-1) {
+			        System.out.print(" - ");
+			    }
 			}
 			System.out.println();
 			System.out.println(this.distancia(result)+" Kms");

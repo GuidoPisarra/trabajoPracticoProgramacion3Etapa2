@@ -11,10 +11,10 @@ public class main {
 		CSVReader reader = new CSVReader(path);
 		reader.read();
 		
-//		System.out.println("Backtracking");
-//		Backtracking back = new Backtracking(reader.obtenerInformacion(), 1, 3);
-//		back.Backtracking_distancia();
-//		System.out.println();
+		System.out.println("Backtracking");
+		Backtracking back = new Backtracking(reader.obtenerInformacion(), 1, 4);
+		back.Backtracking_distancia();
+		System.out.println();
 		
 		Greedy greedy = new Greedy();
 		System.out.println("Greedy");
