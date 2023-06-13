@@ -9,9 +9,11 @@ import Interfaces.Grafo;
 
 public class GrafoDirigido<T> implements Grafo<T> {
 	
-	HashMap<Integer, HashMap<Integer, T>> vertices = new HashMap<>();
+	private HashMap<Integer, HashMap<Integer, T>> vertices = new HashMap<>();
 
-	HashMap<Integer, String> colores = new HashMap<>();
+	private HashMap<Integer, String> colores = new HashMap<>();
+	
+	private int cantidadDeArcos = 0;
 		
 	@Override
 	public void agregarVertice(int verticeId) {
@@ -32,13 +34,15 @@ public class GrafoDirigido<T> implements Grafo<T> {
 	public void agregarArco(int verticeId1, int verticeId2, T etiqueta) {
 		if(vertices.containsKey(verticeId1) && vertices.containsKey(verticeId2)) {
 			vertices.get(verticeId1).put(verticeId2, etiqueta);
+			this.cantidadDeArcos++;
 		}
 	}
 
 	@Override
 	public void borrarArco(int verticeId1, int verticeId2) {
 		if(vertices.containsKey(verticeId1)) {			
-			vertices.get(verticeId1).remove(verticeId2);			
+			vertices.get(verticeId1).remove(verticeId2);
+			this.cantidadDeArcos--;
 		}
 	}
 
@@ -74,11 +78,7 @@ public class GrafoDirigido<T> implements Grafo<T> {
 
 	@Override
 	public int cantidadArcos() {
-		int cantidadDeArcos =0;
-		for(int i: vertices.keySet()) {
-			cantidadDeArcos += vertices.get(i).size(); 
-		}
-		return cantidadDeArcos;
+		return this.cantidadDeArcos;
 	}
 
 	@Override

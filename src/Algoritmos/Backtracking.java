@@ -40,33 +40,30 @@ public class Backtracking {
 		}
 	}
 	
-	private List<Integer> backtracking(List<Integer> caminoActual , int actual){
-		LinkedList<Integer> caminoMenor = new LinkedList<Integer>();
-		if(actual==this.destino) {
-			caminoMenor.addAll(caminoActual);	
-		}else {
-			Iterator<Integer> adyacentes = this.grafo.obtenerAdyacentes(actual);
-			this.visitados.replace(actual,"AMARILLO");
-			while(adyacentes.hasNext()) {
-				int adyacente = adyacentes.next();
-				if(this.visitados.get(adyacente).equals("BLANCO")) {
-					caminoActual.add(adyacente);
-					if(this.distancia(caminoActual)<this.distancia(caminoMenor)) {
-						caminoActual.addAll(backtracking(caminoActual, adyacente));
-					}
-
-					if((this.distancia(caminoActual)<=this.distancia(caminoMenor)) || (caminoMenor.isEmpty())) {
-						if(llegoDestino(caminoActual)) {
-							caminoMenor.clear();						
-							caminoMenor.addAll(caminoActual);
-						}
-					}
-				}
-			}
-			this.visitados.replace(actual, "BLANCO");
-		}			
-		return caminoMenor; 
-	}
+	private List<Integer> backtracking(List<Integer> caminoActual, int actual) {
+        LinkedList<Integer> caminoMenor = new LinkedList<Integer>();
+        if (actual == this.destino) {
+            caminoMenor.addAll(caminoActual);
+        } else {
+            Iterator<Integer> adyacentes = this.grafo.obtenerAdyacentes(actual);
+            this.visitados.replace(actual, "AMARILLO");
+            while (adyacentes.hasNext()) {
+                int adyacente = adyacentes.next();
+                if (this.visitados.get(adyacente).equals("BLANCO")) {
+                    caminoActual.add(adyacente);
+                    List<Integer> caminoRecursivo = backtracking(caminoActual, adyacente);
+                    if (!caminoRecursivo.isEmpty() &&
+                            (caminoMenor.isEmpty() || this.distancia(caminoRecursivo) < this.distancia(caminoMenor))) {
+                        caminoMenor.clear();
+                        caminoMenor.addAll(caminoRecursivo);
+                    }
+                    caminoActual.remove(caminoActual.size()-1);
+                }
+            }
+            this.visitados.replace(actual, "BLANCO");
+        }
+        return caminoMenor;
+    }
 	
 	private float distancia(List<Integer> camino) {	
 		List<Integer> listaAuxiliar = camino;
@@ -101,8 +98,6 @@ public class Backtracking {
 		}
 	}
 	
-	private boolean llegoDestino(List<Integer> camino) {
-		return camino.get(0)==this.origen && camino.get(camino.size()-1)==this.destino;
-	}
+
 	
 }
