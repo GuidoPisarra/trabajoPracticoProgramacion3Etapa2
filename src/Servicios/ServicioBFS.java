@@ -1,4 +1,4 @@
-package tpe;
+package Servicios;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,8 +17,7 @@ public class ServicioBFS {
 	public ServicioBFS(Grafo<?> grafo) {
 		this.grafo = grafo;
 	}
-	
-	
+		
 	public List<Integer> bfsForest(){
 		Iterator<Integer> vertices = this.grafo.obtenerVertices();
 		
