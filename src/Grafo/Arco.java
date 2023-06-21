@@ -33,7 +33,6 @@ public class Arco<T> {
 
 	@Override
 	public boolean equals(Object obj) {
-		//System.out.println(obj + " "+(Objects.equals(etiqueta, this.etiqueta) && Objects.equals(verticeOrigen,this.verticeOrigen) && Objects.equals(verticeDestino, this.verticeDestino)));
 		return Objects.equals(etiqueta, this.etiqueta) && Objects.equals(verticeOrigen,this.verticeOrigen) && Objects.equals(verticeDestino, this.verticeDestino);
 	}
 

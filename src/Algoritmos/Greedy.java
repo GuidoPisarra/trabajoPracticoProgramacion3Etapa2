@@ -35,46 +35,32 @@ public class Greedy {
     	}   
     }
     
-    private void mostrarSolucion(HashMap<Integer,Integer> solucion) {
-    	int distancia = 0 ;
-    	int i = 0;
-    	for (Map.Entry<Integer, Integer> entry : solucion.entrySet()) {
-          System.out.print("E"+entry.getKey()+ "-" +"E"+entry.getValue());
-          if (i < solucion.size() - 1) {
-              System.out.print(", ");
-          }
-          i++;
-          Arco<Integer> arco = this.grafo.obtenerArco(entry.getKey(), entry.getValue());
-          distancia = distancia + arco.getEtiqueta();
-    	}
-    	System.out.println();
-        System.out.println(distancia+" Kms");
-        System.out.println(iteraciones+" Iteraciones");
-
-
-    }
     
-    
+    /*
+     * Costo computacional de esta funcion es de O( m log n) donde
+     * m es la cantidad de pares de vértices y n la cantidad de vértices  
+     */
     private boolean esSolucion(HashMap<Integer, Integer> resultado) {
         UnionFind unionFind = new UnionFind(this.grafo.cantidadVertices());
         
         // Unir los componentes según los pares de vértices en el resultado
+        // Costo computacional de O(m log n) donde m es la cantidad de pares de vértices 
+        //y n es la cantidad de vértices
         for (Map.Entry<Integer, Integer> entry : resultado.entrySet()) {
             int vertice1 = entry.getKey();
             int vertice2 = entry.getValue();
-            
             unionFind.union(vertice1, vertice2);
         }
         
         // Verificar si todos los vértices están en la misma componente
         int representante = unionFind.find(0); // Obtener el representante de cualquier vértice
+        // Costo computacional O(n log n) donde n es la cantidad de vértices
         for (int i = 1; i < this.grafo.cantidadVertices(); i++) {
             if (unionFind.find(i) != representante) {
             	// Los vértices no están conectados
                 return false; 
             }
-        }
-        
+        }       
         // Todos los vértices están conectados
         return true; 
     }
@@ -107,6 +93,24 @@ public class Greedy {
     	return iteratorOrdenado;
     }
     
+    private void mostrarSolucion(HashMap<Integer,Integer> solucion) {
+    	int distancia = 0 ;
+    	int i = 0;
+    	for (Map.Entry<Integer, Integer> entry : solucion.entrySet()) {
+          System.out.print("E"+entry.getKey()+ "-" +"E"+entry.getValue());
+          if (i < solucion.size() - 1) {
+              System.out.print(", ");
+          }
+          i++;
+          Arco<Integer> arco = this.grafo.obtenerArco(entry.getKey(), entry.getValue());
+          distancia = distancia + arco.getEtiqueta();
+    	}
+    	System.out.println();
+        System.out.println(distancia+" Kms");
+        System.out.println(iteraciones+" Iteraciones");
+
+
+    }
     
     
 }

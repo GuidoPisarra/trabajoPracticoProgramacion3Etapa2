@@ -1,121 +1,124 @@
 package Algoritmos;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-
 import Grafo.Arco;
-import Grafo.GrafoDirigido;
 import Grafo.GrafoNoDirigido;
-import Timer.Timer;
 
 public class Backtracking {
+    private GrafoNoDirigido<Integer> grafo;
+    private LinkedList<Arco<Integer>> mejorSolucion;
+    private LinkedList<Arco<Integer>> visitados;
+    private int iteraciones = 0;
 
-	private GrafoNoDirigido<Integer> grafo;
-	private HashMap<Integer,String> visitados;
-	private int iteraciones;
-	
-	
-	public Backtracking(GrafoNoDirigido<Integer> grafo ) {
-		this.grafo = grafo;
-		this.visitados = new HashMap<Integer,String>();
-		this.iteraciones = 0;
-	}
-	
-	public void Backtracking_distancia() {
-		
-	}
-	
+    public Backtracking(GrafoNoDirigido<Integer> grafo) {
+        this.grafo = grafo;
+        this.mejorSolucion = new LinkedList<Arco<Integer>>();
+        this.visitados = new LinkedList<Arco<Integer>>();       
+    }
+    
+    public void backtracking_distancia() {
+        LinkedList<Arco<Integer>> resultadoParcial = new LinkedList<Arco<Integer>> ();
+        
+        Iterator<Arco<Integer>> arcos = this.grafo.obtenerArcos();
+        while(arcos.hasNext()) {
+        	Arco<Integer> arco = arcos.next();
+        	backtracking(arco,resultadoParcial);
+       	
+        }
+        
 
-	
-	
-	
-	
-	
-	
-	
-// PRIMER SOLUCION, ESTA MAL
-//	public Backtracking(GrafoNoDirigido<Integer> grafo, int origen, int destino) {
-//		this.grafo = grafo;
-//		this.origen = origen;
-//		this.destino = destino;
-//	}
-//
-//	public void Backtracking_distancia() {
-//		this.timer.start();
-//		if(this.grafo.contieneVertice(this.origen) && this.grafo.contieneVertice(this.destino)) {
-//			LinkedList<Integer> camino = new LinkedList<Integer>();
-//			Iterator<Integer> vertices = this.grafo.obtenerVertices();
-//			while(vertices.hasNext()) {
-//				int vertice = vertices.next();
-//				this.visitados.put(vertice,"BLANCO");
-//			}		
-//			camino.add(this.origen);
-//			mostrarResultado(backtracking(camino,origen), this.timer.stop());
-//		}else {
-//			mostrarResultado(new LinkedList<Integer>(), this.timer.stop());
-//		}
-//	}
-//	
-//	private List<Integer> backtracking(List<Integer> caminoActual, int actual) {
-//        LinkedList<Integer> caminoMenor = new LinkedList<Integer>();
-//        if (actual == this.destino) {
-//            caminoMenor.addAll(caminoActual);
-//        } else {
-//            Iterator<Integer> adyacentes = this.grafo.obtenerAdyacentes(actual);
-//            this.visitados.replace(actual, "AMARILLO");
-//            while (adyacentes.hasNext()) {
-//                int adyacente = adyacentes.next();
-//                if (this.visitados.get(adyacente).equals("BLANCO")) {
-//                    caminoActual.add(adyacente);
-//                    List<Integer> caminoRecursivo = backtracking(caminoActual, adyacente);
-//                    if (!caminoRecursivo.isEmpty() &&
-//                            (caminoMenor.isEmpty() || this.distancia(caminoRecursivo) < this.distancia(caminoMenor))) {
-//                        caminoMenor.clear();
-//                        caminoMenor.addAll(caminoRecursivo);
-//                    }
-//                    caminoActual.remove(caminoActual.size()-1);
-//                }
-//            }
-//            this.visitados.replace(actual, "BLANCO");
+            mostrarSolucion(mejorSolucion);
+            System.out.println(calcularDistancia(mejorSolucion));
+
+    }
+
+    private void backtracking(Arco<Integer>arcoActual,LinkedList<Arco<Integer>> resultadoParcial) {
+        if (esSolucion(resultadoParcial)) {
+        	if (this.calcularDistancia(resultadoParcial)<this.calcularDistancia(mejorSolucion) ) {
+        		mejorSolucion.clear();
+                mejorSolucion.addAll(resultadoParcial);
+            }            
+        }else {
+        	Iterator<Integer> adyacentes = grafo.obtenerAdyacentes(arcoActual.getVerticeOrigen());
+        	while (adyacentes.hasNext()) {
+        		int adyacente = adyacentes.next();
+        		Arco<Integer> arco = this.grafo.obtenerArco(arcoActual.getVerticeOrigen(), adyacente);
+        		this.iteraciones++;
+        		if (this.arcoUtilizado(arco)) {
+        			resultadoParcial.add(arco);
+        			this.visitados.add(arco);
+        			if(this.calcularDistancia(resultadoParcial)<this.calcularDistancia(mejorSolucion)) {
+        				backtracking(arco,resultadoParcial);
+        			}
+                    
+        			visitados.remove(arco);
+        			resultadoParcial.remove(arco);
+        		}
+        	}
+        }
+
+    }
+
+    private int calcularDistancia(LinkedList<Arco<Integer>>  resultado) {
+        int distancia = 0;
+        
+        LinkedList<Arco<Integer>> resultadoAuxiliar = new LinkedList<Arco<Integer>>();
+        resultadoAuxiliar.addAll(resultado);
+        if(!resultado.isEmpty()) {
+        	while(!resultadoAuxiliar.isEmpty()) {
+        		Arco<Integer> arco = resultadoAuxiliar.pop();
+        		distancia = distancia + arco.getEtiqueta();
+        	}
+        	
+        	return distancia;
+        }
+        return  Integer.MAX_VALUE;
+    }
+
+	private boolean esSolucion(LinkedList<Arco<Integer>>  solucionParcial) {
+//		LinkedList<Integer> vertices = new LinkedList<Integer>();
+//        LinkedList<Arco<Integer>> solucionAuxiliar = new LinkedList<Arco<Integer>>();
+//        solucionAuxiliar.addAll(solucionParcial);
+//        while (!solucionAuxiliar.isEmpty()) {
+//        	Arco<Integer> arco = solucionAuxiliar.pop();
+//        	if(!vertices.contains(arco.getVerticeOrigen())) {
+//        		vertices.add(arco.getVerticeOrigen());
+//        	}
+//        	if(!vertices.contains(arco.getVerticeDestino())) {
+//        		vertices.add(arco.getVerticeDestino());
+//        	}
 //        }
-//        return caminoMenor;
-//    }
-//	
-//	private float distancia(List<Integer> camino) {	
-//		List<Integer> listaAuxiliar = camino;
-//		float distancia = 0;
-//		for(int i = 0; i<camino.size()-1; i++) {
-//			int estacion = listaAuxiliar.get(i);
-//			int estacion2 = listaAuxiliar.get(i+1);
-//			if(this.grafo.existeArco(estacion, estacion2)) {
-//				Arco<Integer> arco = this.grafo.obtenerArco(estacion, estacion2);
-//				distancia = distancia + arco.getEtiqueta();
-//			}			
-//		}
-//		return distancia;
-//	}
-//	
-//	private void mostrarResultado(List<Integer> result, double tiempo) {
-//		if(!result.isEmpty()) {
-//			for (int i = 0; i < result.size(); i++) {
-//			    Integer res = result.get(i);
-//			    System.out.print("E" + res);
-//			    if (i != result.size()-1) {
-//			        System.out.print(" - ");
-//			    }
-//			}
-//			System.out.println();
-//			System.out.println(this.distancia(result)+" Kms");
-//			System.out.println("Tiempo: "+tiempo);
-//		}else {
-//			System.out.println();
-//			System.out.println("La/s estacion/es que ingresó no existen");
-//			System.out.println("Tiempo: "+tiempo);
-//		}
-//	}
-//	
+//        System.out.println(vertices.toString());
+        
+		return solucionParcial.size()==this.grafo.cantidadVertices();
+	}
+    
+    private void mostrarSolucion(LinkedList<Arco<Integer>> solucion) {
+        int distancia = 0;
+        int i = 0;
 
-	
+        LinkedList<Arco<Integer>> solucionAuxiliar = solucion;
+        while (!solucionAuxiliar.isEmpty()) {
+        	Arco<Integer> arco = solucionAuxiliar.pop();
+            System.out.print("E" + arco.getVerticeOrigen() + "-" + "E" + arco.getVerticeDestino());
+            if (i < solucion.size() ) {
+                System.out.print(", ");
+            }
+            i++;
+
+
+            distancia = distancia + arco.getEtiqueta();
+        }
+        System.out.println();
+        System.out.println(distancia + " Kms");
+        System.out.println(iteraciones + " Iteraciones");
+    }
+    
+    private boolean arcoUtilizado(Arco<Integer> arco) {
+	    Arco<Integer> arcoAuxiliar = new Arco<Integer>(arco.getVerticeDestino(),arco.getVerticeOrigen(), arco.getEtiqueta());
+	    System.out.println(this.visitados.contains(arcoAuxiliar)|| this.visitados.contains(arco));
+
+	    return (this.visitados.contains(arcoAuxiliar)|| this.visitados.contains(arco));
+    }
 }
