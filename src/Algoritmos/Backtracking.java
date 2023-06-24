@@ -12,6 +12,7 @@ public class Backtracking {
     private LinkedList<Arco<Integer>> arcosTotales;
 
     private int iteraciones = 0;
+    private int kmMejorSolucion = 0;
 
     public Backtracking(GrafoNoDirigido<Integer> grafo) {
         this.grafo = grafo;
@@ -23,77 +24,68 @@ public class Backtracking {
     }
     
     public void backtracking_distancia() {
-        LinkedList<Arco<Integer>> resultadoParcial= new LinkedList<Arco<Integer>> ();;
-        Iterator<Arco<Integer>> arcos = this.grafo.obtenerArcos();
+       Iterator<Arco<Integer>> arcos = this.grafo.obtenerArcos();
 
-		while(arcos.hasNext()) {
+    	while(arcos.hasNext()) {
 			Arco<Integer> arco = arcos.next();
 			arcosTotales.add(arco);
 		}
-		this.visitados.clear();
-		Arco<Integer> arco =arcosTotales.pop();
-		resultadoParcial.add(arco);
+		LinkedList<Arco<Integer>> solucion = new LinkedList<Arco<Integer>>();
+		backtracking(solucion, 0);
+		mostrarSolucion(mejorSolucion);
+	}
+	
+	private void backtracking(LinkedList<Arco<Integer>> solucionActual, int distanciaSolucionActual) {
+		iteraciones++;
+		if (arcosTotales.isEmpty() || this.mejorSolucion.isEmpty()) {
+			if (esSolucion(solucionActual) &&(distanciaSolucionActual < kmMejorSolucion || this.mejorSolucion.isEmpty())	) {
+				this.mejorSolucion.clear();
+				this.mejorSolucion.addAll(solucionActual);
+				this.kmMejorSolucion = distanciaSolucionActual;
+			}
+		} if (!arcosTotales.isEmpty() && !( !this.mejorSolucion.isEmpty() && this.kmMejorSolucion <= distanciaSolucionActual )) {
+			Arco<Integer> arco = arcosTotales.poll();
+			
+			solucionActual.add(arco);
+			distanciaSolucionActual = distanciaSolucionActual + arco.getEtiqueta();
+			
+			backtracking(solucionActual, distanciaSolucionActual);
+			
+			solucionActual.removeLast();
+			distanciaSolucionActual = distanciaSolucionActual - arco.getEtiqueta();
+			
+			backtracking(solucionActual, distanciaSolucionActual);
+			arcosTotales.addFirst(arco);
+		}
 		
-        mostrarSolucion(backtracking(arco, resultadoParcial ));
-
-    }
-
-    private LinkedList<Arco<Integer>> backtracking(Arco<Integer> arcoActual, LinkedList<Arco<Integer>> resultadoParcial) {
-        LinkedList<Arco<Integer>> mejorSolucion = new LinkedList<Arco<Integer>>();
-        
-        if (arcosTotales.isEmpty()) {
-            return resultadoParcial;
-        } else {
-            Iterator<Arco<Integer>> arcosAdyacentes = this.grafo.obtenerArcos(arcoActual.getVerticeOrigen());
-        
-            Arco<Integer> arco = arcosTotales.pop();
-            visitados.add(arco);
-            while (arcosAdyacentes.hasNext()) {
-                iteraciones++;
-        
-                Arco<Integer> arcoAdyacente = arcosAdyacentes.next();
-                if (!this.visitados.contains(arcoAdyacente)) {
-                    resultadoParcial.add(arcoAdyacente);
-        
-                    LinkedList<Arco<Integer>> resultado = backtracking(arco, resultadoParcial);
-                    resultadoParcial.remove(arcoAdyacente); // Remover el último arco agregado
-
-                    if(esSolucion(resultado)) {
-                    	if (calcularDistancia(resultado) < calcularDistancia(mejorSolucion) ) {
-                    		System.out.println(resultadoParcial);
-                    		System.out.println("resultado "+resultado);
-                    		resultado.add(arcoAdyacente);
-                    		mejorSolucion.clear();
-                    		mejorSolucion.addAll(resultado);
-                    		
-                    	}
-
-                    }
-        
-                }
-                visitados.remove(arcoAdyacente);
-            }
-        }
-        
-        return mejorSolucion;
-    }
-
-
-
-
-    private int calcularDistancia(LinkedList<Arco<Integer>>  resultado) {
-        int distancia = 0;
-        
-        LinkedList<Arco<Integer>> resultadoAuxiliar = new LinkedList<Arco<Integer>>();
-        resultadoAuxiliar.addAll(resultado);
-        if(!resultado.isEmpty()) {
-        	for (Arco<Integer> arco : resultado) {
-                distancia += arco.getEtiqueta();
-            }
-        	return distancia;
-        }
-        return  Integer.MAX_VALUE;
-    }
+	}
+    
+//	private boolean esSolucion(LinkedList<Arco<Integer>>  solucionParcial) {
+//        boolean existeCamino = true;
+//		for (Arco<Integer> arco : solucionParcial) {
+//	        
+//			for (Arco<Integer> arco2 : solucionParcial) {
+//		        if(!arco.equals(arco2)) {
+//		    		System.out.println(arco2);
+//
+//		        	if(arco.getVerticeDestino() == arco2.getVerticeOrigen() || arco.getVerticeDestino() == arco2.getVerticeDestino()) {
+//		        		existeCamino =true;
+//		        		break;
+//		        	}
+//		        }
+//		        if(!existeCamino) {
+//		        	existeCamino =false;
+//		        	break;
+//		        }
+//				
+//		    }
+//	    }
+//		System.out.println(existeCamino);
+//		return existeCamino;
+		
+	
+//	}
+    
 
 	private boolean esSolucion(LinkedList<Arco<Integer>>  solucionParcial) {
 		LinkedList<Integer> vertices = new LinkedList<Integer>();
