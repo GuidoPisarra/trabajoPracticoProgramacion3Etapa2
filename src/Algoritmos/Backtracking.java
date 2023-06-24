@@ -36,8 +36,9 @@ public class Backtracking {
        backtracking(solucion, distanciaInicial);
        mostrarSolucion(mejorSolucion);
 	}
-	
-	private void backtracking(LinkedList<Arco<Integer>> solucionActual, int distanciaSolucionActual) {
+    
+    
+    private void backtracking(LinkedList<Arco<Integer>> solucionActual, int distanciaSolucionActual) {
 		iteraciones++;
 		if (arcosTotales.isEmpty() ) {
 			if (esSolucion(solucionActual) &&(distanciaSolucionActual < kmMejorSolucion )	) {
@@ -48,23 +49,59 @@ public class Backtracking {
 		} else{
 			if (!arcosTotales.isEmpty() ) {
 				Arco<Integer> arco = arcosTotales.poll();
+				Arco<Integer> arcoAux = new Arco<Integer>(arco.getVerticeDestino(),arco.getVerticeOrigen(),arco.getEtiqueta());
 				
-				solucionActual.add(arco);
-				distanciaSolucionActual = distanciaSolucionActual + arco.getEtiqueta();
-				if(!( !this.mejorSolucion.isEmpty() && this.kmMejorSolucion <= distanciaSolucionActual )){ //poda
+				this.visitados.add(arco);
+				if(!this.visitados.contains(arco) && !this.visitados.contains(arcoAux)) {
 					
-					backtracking(solucionActual, distanciaSolucionActual);
+					solucionActual.add(arco);
+					distanciaSolucionActual = distanciaSolucionActual + arco.getEtiqueta();
+					if(!( !this.mejorSolucion.isEmpty() && this.kmMejorSolucion <= distanciaSolucionActual )){
+						
+						backtracking(solucionActual, distanciaSolucionActual);
+					}
+					
+					
+					
+					solucionActual.remove(arco);
+					distanciaSolucionActual = distanciaSolucionActual - arco.getEtiqueta();
 				}
+				this.visitados.remove(arco);
 				
-				solucionActual.removeLast();
-				distanciaSolucionActual = distanciaSolucionActual - arco.getEtiqueta();
-				
-				backtracking(solucionActual, distanciaSolucionActual);
-				arcosTotales.addFirst(arco);
+
 			}
 		}
 		
 	}
+//BACKTACKING MAL Y SIN FUNCIONAR
+//	private void backtracking(LinkedList<Arco<Integer>> solucionActual, int distanciaSolucionActual) {
+//		iteraciones++;
+//		if (arcosTotales.isEmpty() ) {
+//			if (esSolucion(solucionActual) &&(distanciaSolucionActual < kmMejorSolucion )	) {
+//				this.mejorSolucion.clear();
+//				this.mejorSolucion.addAll(solucionActual);
+//				this.kmMejorSolucion = distanciaSolucionActual;
+//			}
+//		} else{
+//			if (!arcosTotales.isEmpty() ) {
+//				Arco<Integer> arco = arcosTotales.poll();
+//				
+//				solucionActual.add(arco);
+//				distanciaSolucionActual = distanciaSolucionActual + arco.getEtiqueta();
+//				if(!( !this.mejorSolucion.isEmpty() && this.kmMejorSolucion <= distanciaSolucionActual )){
+//					
+//					backtracking(solucionActual, distanciaSolucionActual);
+//				}
+//				
+//				solucionActual.removeLast();
+//				distanciaSolucionActual = distanciaSolucionActual - arco.getEtiqueta();
+//				
+//				backtracking(solucionActual, distanciaSolucionActual);
+//				arcosTotales.addFirst(arco);
+//			}
+//		}
+//		
+//	}
     
 //	private boolean esSolucion(LinkedList<Arco<Integer>>  solucionParcial) {
 //        boolean existeCamino = true;
