@@ -12,7 +12,7 @@ public class Backtracking {
     private LinkedList<Arco<Integer>> arcosTotales;
 
     private int iteraciones = 0;
-    private int kmMejorSolucion = 0;
+    private int kmMejorSolucion = Integer.MAX_VALUE;
 
     public Backtracking(GrafoNoDirigido<Integer> grafo) {
         this.grafo = grafo;
@@ -25,37 +25,43 @@ public class Backtracking {
     
     public void backtracking_distancia() {
        Iterator<Arco<Integer>> arcos = this.grafo.obtenerArcos();
-
-    	while(arcos.hasNext()) {
-			Arco<Integer> arco = arcos.next();
-			arcosTotales.add(arco);
-		}
-		LinkedList<Arco<Integer>> solucion = new LinkedList<Arco<Integer>>();
-		backtracking(solucion, 0);
-		mostrarSolucion(mejorSolucion);
+       int distanciaInicial = 0;
+    	
+       while(arcos.hasNext()) {
+    	   Arco<Integer> arco = arcos.next();
+    	   arcosTotales.add(arco);
+       }
+       LinkedList<Arco<Integer>> solucion = new LinkedList<Arco<Integer>>();
+		
+       backtracking(solucion, distanciaInicial);
+       mostrarSolucion(mejorSolucion);
 	}
 	
 	private void backtracking(LinkedList<Arco<Integer>> solucionActual, int distanciaSolucionActual) {
 		iteraciones++;
-		if (arcosTotales.isEmpty() || this.mejorSolucion.isEmpty()) {
-			if (esSolucion(solucionActual) &&(distanciaSolucionActual < kmMejorSolucion || this.mejorSolucion.isEmpty())	) {
+		if (arcosTotales.isEmpty() ) {
+			if (esSolucion(solucionActual) &&(distanciaSolucionActual < kmMejorSolucion )	) {
 				this.mejorSolucion.clear();
 				this.mejorSolucion.addAll(solucionActual);
 				this.kmMejorSolucion = distanciaSolucionActual;
 			}
-		} if (!arcosTotales.isEmpty() && !( !this.mejorSolucion.isEmpty() && this.kmMejorSolucion <= distanciaSolucionActual )) {
-			Arco<Integer> arco = arcosTotales.poll();
-			
-			solucionActual.add(arco);
-			distanciaSolucionActual = distanciaSolucionActual + arco.getEtiqueta();
-			
-			backtracking(solucionActual, distanciaSolucionActual);
-			
-			solucionActual.removeLast();
-			distanciaSolucionActual = distanciaSolucionActual - arco.getEtiqueta();
-			
-			backtracking(solucionActual, distanciaSolucionActual);
-			arcosTotales.addFirst(arco);
+		} else{
+			if (!arcosTotales.isEmpty() ) {
+				Arco<Integer> arco = arcosTotales.poll();
+				
+				solucionActual.add(arco);
+				distanciaSolucionActual = distanciaSolucionActual + arco.getEtiqueta();
+				if(!( !this.mejorSolucion.isEmpty() && this.kmMejorSolucion <= distanciaSolucionActual )){ //poda
+					
+					backtracking(solucionActual, distanciaSolucionActual);
+				}
+				
+				solucionActual.removeLast();
+				distanciaSolucionActual = distanciaSolucionActual - arco.getEtiqueta();
+				
+				backtracking(solucionActual, distanciaSolucionActual);
+				arcosTotales.addFirst(arco);
+			}
 		}
 		
 	}
