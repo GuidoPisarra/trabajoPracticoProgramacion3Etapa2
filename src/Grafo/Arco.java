@@ -30,18 +30,23 @@ public class Arco<T> {
 	public T getEtiqueta() {
 		return etiqueta;
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return Objects.equals(etiqueta, this.etiqueta) && Objects.equals(verticeOrigen,this.verticeOrigen) && Objects.equals(verticeDestino, this.verticeDestino);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Arco<?> arco = (Arco<?>) obj;
+        return verticeOrigen == arco.verticeOrigen && verticeDestino == arco.verticeDestino && Objects.equals(etiqueta, arco.etiqueta);
+    }
 
 	@Override
 	public String toString() {
 		return "Arco [verticeOrigen=" + verticeOrigen + ", verticeDestino=" + verticeDestino + ", etiqueta=" + etiqueta
 				+ "]";
 	}
-	
-	
+
 
 }
