@@ -60,9 +60,9 @@ public class Backtracking {
     					this.visitados.replace(adyacente, "AMARILLO");
     					solucionActual.put(verticeActual, adyacente);
     					Arco<Integer> arco = this.grafo.obtenerArco(verticeActual, adyacente);
-    					//if(calcularDistancia(solucionActual)<= calcularDistancia(this.solucion) || this.solucion.isEmpty()) {
+    					if(calcularDistancia(solucionActual)<= calcularDistancia(this.solucion) || this.solucion.isEmpty()) { // PODA
     						backtracking(solucionActual,adyacente,distanciaSolucionActual+arco.getEtiqueta());
-    					//}
+    					}
     					solucionActual.remove(verticeActual,adyacente);
     					this.visitados.replace(adyacente, "BLANCO");
     				}
