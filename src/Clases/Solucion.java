@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import Grafo.Arco;
+import Union.UnionFind;
 
 public class Solucion {
 	private LinkedList<Arco<Integer>> conjuntoSolucion = new LinkedList<Arco<Integer>>(); 
@@ -79,6 +80,26 @@ public class Solucion {
 	    System.out.println(this.distancia + " Kms");
 	}
 	
-	
+	/*
+     * Complejidad computacional O(n) donde n es la cantidad de vértices
+     * Este método itera sobre el mapa de solucionParcial, por lo tanto la complejidad 
+     * es de O(n) donde n es la cantidad de vértices que posee el mapa solucionParcial.
+     */
+    public boolean esSolucion( int cantidadTunelesTotales) {
+        if (!this.conjuntoSolucion.isEmpty()) {
+            UnionFind union = new UnionFind(cantidadTunelesTotales);
+            Iterator<Arco<Integer>> tuneles = this.obtenerTuneles();
+            while(tuneles.hasNext()) {
+            	Arco<Integer> tunel = tuneles.next();
+            	int verticeOrigen = tunel.getVerticeOrigen() - 1;
+            	int verticeDestino = tunel.getVerticeDestino() - 1;
+            	union.Union(verticeOrigen, verticeDestino);
+            }
+
+            return union.size() == 1;
+        }
+
+        return false;
+    }
 	
 }

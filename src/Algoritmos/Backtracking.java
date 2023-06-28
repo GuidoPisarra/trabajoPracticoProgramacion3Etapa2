@@ -11,20 +11,17 @@ import Grafo.GrafoNoDirigido;
 import Union.UnionFind;
 
 public class Backtracking {
+	
 	private GrafoNoDirigido<Integer> grafo;
-	//private LinkedList<Arco<Integer>>  mejorSolucion = new LinkedList<Arco<Integer>>();
 	private Solucion  mejorSolucion = new Solucion();
-
 	private LinkedList<Arco<Integer>> arcosTotales = new LinkedList<Arco<Integer>>();
-
     private int iteraciones;
 
     public Backtracking(GrafoNoDirigido<Integer> grafo) {
        this.grafo = grafo;
        this.iteraciones = 0;
        
-    }
-    
+    }    
     
     /*
      * Complejidad computacional O(n^2) donde n es la cantidad de vértices
@@ -40,8 +37,7 @@ public class Backtracking {
     		this.arcosTotales.add(arco);
     	}
     	
-    	//LinkedList<Arco<Integer>> solucion = new LinkedList<Arco<Integer>>();
-    	 Solucion  solucion = new Solucion();
+    	Solucion  solucion = new Solucion();
 
     	backtracking(solucion);
     	
@@ -59,20 +55,17 @@ public class Backtracking {
 	private void  backtracking(Solucion solucionActual) {
 		iteraciones++;
 		if (arcosTotales.isEmpty()) {
-			if ((esSolucion(solucionActual))&& (solucionActual.obtenerDistancia() < mejorSolucion.obtenerDistancia() || mejorSolucion.isEmpty())) {
-
+			if ((solucionActual.esSolucion(this.grafo.cantidadVertices()))&& (solucionActual.obtenerDistancia() < mejorSolucion.obtenerDistancia() || mejorSolucion.isEmpty())) {
 				this.mejorSolucion.clear();
 				this.mejorSolucion.addAll(solucionActual);
-			}
-			
+			}			
 		} else{
 			if((solucionActual.obtenerDistancia() < mejorSolucion.obtenerDistancia() || mejorSolucion.isEmpty())) {			
 				Arco<Integer> arco = arcosTotales.pop();
 				
 				backtracking(solucionActual);
 				solucionActual.agregarTunel(arco);				
-				
-				
+							
 				backtracking(solucionActual);				
 				solucionActual.quitarTunel(arco);
 				arcosTotales.add(0,arco);
@@ -81,34 +74,5 @@ public class Backtracking {
 		}
 
 	}
-	
-
- 
-    
-    /*
-     * Complejidad computacional O(n) donde n es la cantidad de vértices
-     * Este método itera sobre el mapa de solucionParcial, por lo tanto la complejidad 
-     * es de O(n) donde n es la cantidad de vértices que posee el mapa solucionParcial.
-     */
-    private boolean esSolucion(Solucion solucionParcial) {
-        if (!solucionParcial.isEmpty()) {
-            UnionFind union = new UnionFind(this.grafo.cantidadVertices());
-            Iterator<Arco<Integer>> tuneles = solucionParcial.obtenerTuneles();
-            while(tuneles.hasNext()) {
-            	Arco<Integer> tunel = tuneles.next();
-            	int verticeOrigen = tunel.getVerticeOrigen() - 1;
-            	int verticeDestino = tunel.getVerticeDestino() - 1;
-            	union.Union(verticeOrigen, verticeDestino);
-            }
-
-            return union.size() == 1;
-        }
-
-        return false;
-    }
-
-    
-    
-
-   
+	  
 }
