@@ -1,14 +1,11 @@
 package Algoritmos;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map;
 
 import Clases.Solucion;
 import Grafo.Arco;
 import Grafo.GrafoNoDirigido;
-import Union.UnionFind;
 
 public class Backtracking {
 	
@@ -21,7 +18,8 @@ public class Backtracking {
        this.grafo = grafo;
        this.iteraciones = 0;
        
-    }    
+    }
+    
     
     /*
      * Complejidad computacional O(n^2) donde n es la cantidad de vértices

@@ -173,7 +173,7 @@ public class GrafoDirigido<T> implements Grafo<T> {
 	}
 	
 	/**
-	 * Obtiene un iterador que me permite recorrer todos los arcos que parten desde verticeId
+	 * Devuelve un iterador que me permite recorrer todos los arcos que parten desde verticeId
 	 * Complejidad: O(a) donde a es la cantidad de de arcos del vértice que recibe como parámetro.
 	 * Para realizar esto, se realiza una iteración, en la que se recorren cada uno de los adyacentes, creando un arco y 
 	 * agregándolo a una lista de arcos; del vértice que recibe como parámetro.
