@@ -43,26 +43,7 @@ public class Greedy {
     private boolean esSolucion(HashMap<Integer, Integer> resultado) {
         UnionFind unionFind = new UnionFind(this.grafo.cantidadVertices());
         
-        // Unir los componentes según los pares de vértices en el resultado
-        // Costo computacional de O(m log n) donde m es la cantidad de pares de vértices 
-        //y n es la cantidad de vértices
-        for (Map.Entry<Integer, Integer> entry : resultado.entrySet()) {
-            int vertice1 = entry.getKey();
-            int vertice2 = entry.getValue();
-            unionFind.union(vertice1, vertice2);
-        }
-        
-        // Verificar si todos los vértices están en la misma componente
-        int representante = unionFind.find(0); // Obtener el representante de cualquier vértice
-        // Costo computacional O(n log n) donde n es la cantidad de vértices
-        for (int i = 1; i < this.grafo.cantidadVertices(); i++) {
-            if (unionFind.find(i) != representante) {
-            	// Los vértices no están conectados
-                return false; 
-            }
-        }       
-        // Todos los vértices están conectados
-        return true; 
+        return unionFind.size()==1; 
     }
     
     /*

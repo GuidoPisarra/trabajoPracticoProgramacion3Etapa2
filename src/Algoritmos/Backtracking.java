@@ -7,101 +7,122 @@ import java.util.Map;
 
 import Grafo.Arco;
 import Grafo.GrafoNoDirigido;
+import Union.UnionFind;
 
 public class Backtracking {
 	private GrafoNoDirigido<Integer> grafo;
-	private HashMap<Integer,String> visitados = new HashMap<Integer,String>();
-	private HashMap<Integer,Integer> solucion = new HashMap<Integer,Integer>();
+	private LinkedList<Arco<Integer>>  mejorSolucion = new LinkedList<Arco<Integer>>();
+	private LinkedList<Arco<Integer>> arcosTotales = new LinkedList<Arco<Integer>>();
 
     private int iteraciones;
-    private int kmMejorSolucion= Integer.MAX_VALUE;
 
     public Backtracking(GrafoNoDirigido<Integer> grafo) {
        this.grafo = grafo;
        this.iteraciones = 0;
+       
     }
     
+    
+    /*
+     * Complejidad computacional O(n^2) donde n es la cantidad de vértices
+     * Esto se debe a que en este método se utilizan dos bucles while, el primero
+     * para setear todos los vértices en blanco en el hshMap de visitados y el segundo
+     * para recorrerlos en su totalidad para obtener la solución. 
+     */
     public void backtracking_distancia() {
-    	Iterator<Integer> vertices = this.grafo.obtenerVertices();
+    	Iterator<Arco<Integer>> arcos = this.grafo.obtenerArcos();    	
     	
-    	while(vertices.hasNext()) {
-    		int vertice = vertices.next();
-    		this.visitados.put(vertice, "BLANCO");
+    	while(arcos.hasNext()) {    		
+    		Arco<Integer> arco = arcos.next();
+    		this.arcosTotales.add(arco);
     	}
     	
-    	HashMap<Integer,Integer> solucionParcial = new HashMap<Integer,Integer>();
-    	vertices = this.grafo.obtenerVertices();
+    	LinkedList<Arco<Integer>> solucion = new LinkedList<Arco<Integer>>();
     	
-    	while(vertices.hasNext()) {
-    		int distanciaInicial = 0;
-    		int vertice = vertices.next();
-    		backtracking(solucionParcial,vertice , distanciaInicial);
-    	}
+    	backtracking(solucion);
     	
-		this.mostrarSolucion(this.solucion);  	
+		this.mostrarSolucion(this.mejorSolucion);  	
     	
  	}
     
-    
-    private void backtracking(HashMap<Integer,Integer> solucionActual, int verticeActual, int distanciaSolucionActual) {
-		this.iteraciones++;
-    	if(esSolucion(solucionActual)) {
-    		if(calcularDistancia(solucionActual)<= calcularDistancia(this.solucion) || this.solucion.isEmpty()) {
-    			this.solucion.clear();
-    			this.solucion = (HashMap<Integer, Integer>) solucionActual.clone();
-    		}
-    	}else {
-    		Iterator<Integer> adyacentes = this.grafo.obtenerAdyacentes(verticeActual);
-    		while(adyacentes.hasNext()) {
-    			int adyacente = adyacentes.next();
-    			
-    			if((!solucionActual.containsKey(adyacente))&&(!solucionActual.containsValue(adyacente))) {
-    				if(this.visitados.get(adyacente).equals("BLANCO")) {
-    					this.visitados.replace(adyacente, "AMARILLO");
-    					solucionActual.put(verticeActual, adyacente);
-    					Arco<Integer> arco = this.grafo.obtenerArco(verticeActual, adyacente);
-    					if(calcularDistancia(solucionActual)<= calcularDistancia(this.solucion) || this.solucion.isEmpty()) { // PODA
-    						backtracking(solucionActual,adyacente,distanciaSolucionActual+arco.getEtiqueta());
-    					}
-    					solucionActual.remove(verticeActual,adyacente);
-    					this.visitados.replace(adyacente, "BLANCO");
-    				}
-    			}
-    		}    		
+    /*
+     * Complejidad computacional O(n^2) donde n es la cantidad de vértices.
+	 * A pesar que dentro del método se hacen verificaciones de claves y valores, éstas
+     * tienden a una complejidad constante, por lo tanto la complejidad es de O(2^n) donde n es la cantidad
+     * de arcos totales (se realiza una exploración exahustiva de todas las combinasciones de los arcos).
+     */
+	private void  backtracking(LinkedList<Arco<Integer>> solucionActual) {
+		iteraciones++;
+		if (arcosTotales.isEmpty()) {
+			if ((esSolucion(solucionActual))&& ((calcularDistancia(solucionActual) < calcularDistancia(mejorSolucion)) || mejorSolucion.isEmpty())) {
+				this.mejorSolucion.clear();
+				this.mejorSolucion.addAll(solucionActual);
+			}
+			
+		} else{
+			if((calcularDistancia(solucionActual) < calcularDistancia(mejorSolucion) || mejorSolucion.isEmpty())) {			
+				Arco<Integer> arco = arcosTotales.pop();
+				
+				backtracking(solucionActual);
+				solucionActual.add(arco);				
+				
+				
+				backtracking(solucionActual);				
+				solucionActual.remove(arco);
+				arcosTotales.add(0,arco);
+			}
+				
+		}
+
+	}
+	
+
+    /*
+     * Complejidad computacional O(n) donde n es la cantidad de vértices
+     * Este método itera sobre el mapa de solucionPosible, por lo tanto la complejidad 
+     * es de O(n) donde n es la cantidad de vértices que posee el mapa solucionPosible.
+     */
+    private int calcularDistancia(LinkedList<Arco<Integer>>  solucionPosible) {
+    	 int distancia = 0;
+    	    for (Arco<Integer> arco : solucionPosible) {
+    	        distancia += arco.getEtiqueta();
+    	    }
+    	    return distancia;
     	}
-    	
-	}
-
     
-    private int calcularDistancia(HashMap<Integer,Integer>  solucionPosible) {
-    	int distancia= 0;    	
-    	for (Map.Entry<Integer, Integer> entry : solucionPosible.entrySet()) {
-		    Integer clave = entry.getKey();
-		    Integer valor = entry.getValue();
-		    Arco<Integer> arco = this.grafo.obtenerArco(clave, valor);
-		    distancia = distancia + arco.getEtiqueta();		    
-		}   	    	
-    	return distancia;
+    /*
+     * Complejidad computacional O(n) donde n es la cantidad de vértices
+     * Este método itera sobre el mapa de solucionParcial, por lo tanto la complejidad 
+     * es de O(n) donde n es la cantidad de vértices que posee el mapa solucionParcial.
+     */
+    private boolean esSolucion(LinkedList<Arco<Integer>> solucionParcial) {
+        if (!solucionParcial.isEmpty()) {
+            UnionFind union = new UnionFind(this.grafo.cantidadVertices());
+            for (Arco<Integer> arco : solucionParcial) {
+                int verticeOrigen = arco.getVerticeOrigen() - 1;
+                int verticeDestino = arco.getVerticeDestino() - 1;
+                union.Union(verticeOrigen, verticeDestino);
+            }
+
+            return union.size() == 1;
+        }
+
+        return false;
     }
-    
 
-	private boolean esSolucion(HashMap<Integer,Integer>  solucionParcial) {	
-		// Controlo que tenga la catnidad de arcos que deberia contener para que esten todos conectados
-		// se que no vana a estar repetidos por algoritmo backtracking	
-		return solucionParcial.size()==this.grafo.cantidadVertices()-1 ;
-	}
     
-
-	private void mostrarSolucion(HashMap<Integer, Integer> solucion) {
+    /*
+     * Complejidad computacional O(n) donde n es la cantidad de vértices que contiene solución
+     * Este método itera sobre el mapa de solución, por lo tanto la complejidad 
+     * es de O(n) donde n es la cantidad de vértices que posee el mapa solución.
+     */
+	private void mostrarSolucion(LinkedList<Arco<Integer>> solucion) {
 	    int distancia = 0;
 	    int tamaño = solucion.size();
 	    // contador solo sirve para controlar la "," al mostrar solucion
 	    int contador = 0;
 	    
-	    for (Map.Entry<Integer, Integer> entry : solucion.entrySet()) {
-	        Integer clave = entry.getKey();
-	        Integer valor = entry.getValue();
-	        Arco<Integer> arco = this.grafo.obtenerArco(clave, valor);
+	    for (Arco<Integer> arco : solucion) {
 	        distancia += arco.getEtiqueta();
 	        System.out.print("E" + arco.getVerticeOrigen() + "-" + "E" + arco.getVerticeDestino());
 	        
